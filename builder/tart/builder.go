@@ -31,6 +31,7 @@ type Config struct {
 	VMBaseName    string   `mapstructure:"vm_base_name"`
 	VMName        string   `mapstructure:"vm_name"`
 	AllowInsecure bool     `mapstructure:"allow_insecure"`
+	IpResolver    string   `mapstructure:"ip_resolver"`
 
 	CpuCount        uint8         `mapstructure:"cpu_count"`
 	CreateGraceTime time.Duration `mapstructure:"create_grace_time"`
@@ -104,7 +105,7 @@ func (b *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (pack
 		steps = append(steps,
 			&communicator.StepConnect{
 				Config:    &b.config.CommunicatorConfig,
-				Host:      TartMachineIP(ctx, b.config.VMName),
+				Host:      TartMachineIP(ctx, b.config.VMName, b.config.IpResolver),
 				SSHConfig: b.config.CommunicatorConfig.SSHConfigFunc(),
 			},
 			new(stepResize),
